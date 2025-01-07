@@ -3,49 +3,117 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Simple GitHub Site</title>
+    <title>Super Ugly Website</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            color: #333;
+            font-family: "Comic Sans MS", cursive, sans-serif;
+            background-color: rgb(245, 112, 58);
+            animation: colorChange 3s infinite alternate;
             margin: 0;
             padding: 0;
         }
-        header {
-            background-color: #333;
-            color: #fff;
-            padding: 10px 20px;
+
+        h1 {
+            font-size: 100px;
             text-align: center;
+            color: rgb(0, 255, 255);
+            animation: rotateText 5s infinite linear;
         }
-        main {
+
+        p {
+            font-size: 50px;
+            color: rgb(255, 0, 255);
+            text-align: center;
+            animation: randomMove 4s infinite alternate;
+        }
+
+        div {
+            background-color: rgb(255, 255, 0);
             padding: 20px;
-        }
-        footer {
-            background-color: #333;
-            color: #fff;
+            border: 5px dashed black;
+            animation: scaleDiv 3s infinite alternate;
             text-align: center;
-            padding: 10px 0;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
+            margin: 20px;
         }
+
+        button {
+            background-color: rgb(255, 0, 0);
+            color: white;
+            font-size: 30px;
+            padding: 10px;
+            margin: 10px;
+            border: none;
+            animation: shake 0.5s infinite alternate;
+        }
+
+        /* Random color change every 3 seconds */
+        @keyframes colorChange {
+            0% {background-color: rgb(245, 112, 58);}
+            25% {background-color: rgb(58, 245, 158);}
+            50% {background-color: rgb(112, 58, 245);}
+            75% {background-color: rgb(245, 58, 112);}
+            100% {background-color: rgb(245, 245, 58);}
+        }
+
+        /* Rotate text animation */
+        @keyframes rotateText {
+            0% {transform: rotate(0deg);}
+            100% {transform: rotate(360deg);}
+        }
+
+        /* Move elements randomly */
+        @keyframes randomMove {
+            0% {transform: translate(50px, 50px);}
+            25% {transform: translate(-50px, 200px);}
+            50% {transform: translate(150px, -100px);}
+            75% {transform: translate(-100px, 0);}
+            100% {transform: translate(200px, 150px);}
+        }
+
+        /* Scale the div */
+        @keyframes scaleDiv {
+            0% {transform: scale(1);}
+            100% {transform: scale(2);}
+        }
+
+        /* Shake button */
+        @keyframes shake {
+            0% {transform: rotate(0deg);}
+            100% {transform: rotate(30deg);}
+        }
+
+        img {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: spinImg 2s infinite linear;
+        }
+
+        /* Spinning image animation */
+        @keyframes spinImg {
+            0% {transform: rotate(0deg);}
+            100% {transform: rotate(360deg);}
+        }
+
     </style>
 </head>
 <body>
-    <header>
-        <h1>Caute pleskacky chcete honkat?</h1>
-    </header>
-    
-    <main>
-        <p>CIn COn Bin ling.</p>
-    </main>
-    
-    <footer>
-        <p>&copy; 2025 My Simple GitHub Site</p>
-    </footer>
+    <h1>Super Ugly Website!</h1>
+    <p>This is so bad, I can't even.</p>
+
+    <div>
+        <p>Confused Yet?</p>
+        <button onclick="alert('You clicked the worst button ever!')">Click Me!</button>
+    </div>
+
+    <img src="https://via.placeholder.com/150" alt="Random Image">
+
+    <p>Why are you still here?</p>
+
 </body>
 </html>
+
 
 
 
