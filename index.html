@@ -1,137 +1,116 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Super Ugly and Weird Website</title>
-  <style>
-    /* Background color clash */
-    body {
-      margin: 0;
-      padding: 0;
-      background-color: #ff00ff; /* Bright pink */
-      font-family: 'Comic Sans MS', cursive, sans-serif;
-      font-size: 18px;
-    }
- 
-    /* Header with contrasting color and weird font */
-    header {
-      text-align: center;
-      background-color: yellow;
-      color: purple;
-      font-size: 3em;
-      padding: 50px;
-      text-transform: uppercase;
-      letter-spacing: 5px;
-    }
- 
-    /* Centered text in the middle */
-    .center-text {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 4em;
-      color: green;
-      font-family: 'Courier New', Courier, monospace;
-      text-shadow: 5px 5px 10px red;
-    }
- 
-    /* Totally random background images */
-    .weird-background {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-image: url('https://as2.ftcdn.net/v2/jpg/01/93/26/33/1000_F_193263317_tngAZTWpymDIOTKEBaRDeVsM9WefBnWu.jpg'), url('https://www.w3schools.com/w3images/forest.jpg');
-      background-size: cover;
-      opacity: 0.3;
-      animation: moveBackground 5s linear infinite;
-    }
- 
-    /* Image shake animation */
-    @keyframes moveBackground {
-      0% { background-position: 0 0; }
-      50% { background-position: 100% 100%; }
-      100% { background-position: 0 0; }
-    }
- 
-    /* Neon pink box with weird text */
-    .neon-box {
-      border: 5px dashed limegreen;
-      padding: 20px;
-      margin: 20px;
-      background-color: purple;
-      color: yellow;
-      font-size: 1.5em;
-      text-align: center;
-      transform: rotate(15deg);
-      animation: bounce 1s infinite alternate;
-    }
- 
-    /* Bounce animation */
-    @keyframes bounce {
-      0% { transform: rotate(15deg) translateY(0); }
-      100% { transform: rotate(15deg) translateY(-20px); }
-    }
- 
-    /* Buttons with absurd styles */
-    button {
-      background-color: orange;
-      color: blue;
-      font-size: 20px;
-      padding: 10px;
-      border: 3px solid red;
-      font-family: 'Comic Sans MS', cursive;
-      cursor: pointer;
-      transition: transform 0.5s;
-    }
- 
-    button:hover {
-      background-color: green;
-      color: white;
-      transform: scale(1.5) rotate(45deg);
-    }
- 
-    /* Unusual footer at the bottom */
-    footer {
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-      text-align: center;
-      background-color: orange;
-      color: black;
-      font-size: 2em;
-      padding: 10px;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-    }
- 
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Museum of Historic Toilets</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        header {
+            background-color: #4CAF50;
+            color: #fff;
+            padding: 20px 10%;
+            text-align: center;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+        header p {
+            margin: 10px 0 0;
+            font-size: 1.2em;
+        }
+        nav {
+            margin: 20px auto;
+            text-align: center;
+        }
+        nav a {
+            text-decoration: none;
+            color: #4CAF50;
+            margin: 0 15px;
+            font-weight: bold;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        main {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 10%;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .section {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            flex: 1 1 calc(33.333% - 40px);
+            box-sizing: border-box;
+        }
+        .section img {
+            max-width: 100%;
+            border-radius: 10px;
+        }
+        .section h2 {
+            font-size: 1.5em;
+            margin: 15px 0;
+        }
+        .section p {
+            font-size: 1em;
+        }
+        footer {
+            text-align: center;
+            background-color: #333;
+            color: #fff;
+            padding: 10px 0;
+            margin-top: 40px;
+        }
+    </style>
 </head>
 <body>
- 
-  <header>
-    ** CHCETE SI VYHONKAT HAMBÁNA?!? **
-  </header>
-a
-  <div class="weird-background"></div>
-a
-  <div class="center-text">
-    ringididiringdingdiding didy diddy dita krausová
-  </div>
- 
-  <div class="neon-box">
-    VIRUS DETEKONVÁN: https://www.gmvv.cz/
-  </div>
- 
-  <button>1 klik = jedna liposukce pro deti v africe!</button
- 
-  <footer>
-Šalamounský baramoun
-  </footer>
- 
+    <header>
+        <h1>Welcome to the Museum of Historic Toilets</h1>
+        <p>Explore the world’s largest collection of toilets, chamberpots, and sanitation artifacts.</p>
+    </header>
+
+    <nav>
+        <a href="#exhibits">Exhibits</a>
+        <a href="#about">About</a>
+        <a href="#visit">Plan Your Visit</a>
+    </nav>
+
+    <main>
+        <div id="exhibits" class="section">
+            <h2>Our Unique Exhibits</h2>
+            <img src="toilet-exhibit.jpg" alt="Historic toilet exhibit">
+            <p>From ancient chamberpots to modern marvels, discover the history and evolution of sanitation.</p>
+        </div>
+
+        <div id="about" class="section">
+            <h2>About the Museum</h2>
+            <img src="museum-interior.jpg" alt="Museum interior">
+            <p>Learn about our mission to preserve and share the fascinating history of human sanitation.</p>
+        </div>
+
+        <div id="visit" class="section">
+            <h2>Plan Your Visit</h2>
+            <img src="museum-entrance.jpg" alt="Museum entrance">
+            <p>Located in the heart of sanitation history, we’re open daily with guided tours available.</p>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Museum of Historic Toilets | Designed with care for history lovers.</p>
+    </footer>
 </body>
 </html>
- 
+
