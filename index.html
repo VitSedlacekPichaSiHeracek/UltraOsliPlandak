@@ -1,82 +1,130 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Trippy Web - Czech Chaos</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Courier New', Courier, monospace;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elegantní stránka</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(120deg, #f0f4ff, #e8eaff);
+            color: #333;
+        }
 
-    body {
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background-color: black;
-      color: white;
-      animation: backgroundFlash 0.2s infinite alternate;
-      overflow: hidden;
-    }
+        header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-image: url('https://via.placeholder.com/1920x1080');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            text-shadow: 0px 2px 5px rgba(0, 0, 0, 0.7);
+            text-align: center;
+        }
 
-    .container {
-      text-align: center;
-      animation: flicker 0.1s infinite alternate;
-    }
+        header h1 {
+            font-size: 3rem;
+            margin: 0;
+        }
 
-    h1 {
-      font-size: 6rem;
-      color: lime;
-      animation: glitch 0.5s infinite alternate;
-      text-shadow: 0 0 5px rgba(255, 0, 0, 0.7), 0 0 10px rgba(255, 0, 0, 0.7);
-    }
+        header p {
+            font-size: 1.5rem;
+            margin-top: 1rem;
+        }
 
-    p {
-      font-size: 2rem;
-      color: red;
-      animation: flashText 0.2s infinite alternate;
-      margin-top: 20px;
-      text-shadow: 0 0 5px rgba(0, 255, 0, 0.7), 0 0 10px rgba(0, 255, 0, 0.7);
-    }
+        .content {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
 
-    table {
-      margin-top: 50px;
-      width: 60%;
-      margin-left: auto;
-      margin-right: auto;
-      border-collapse: collapse;
-      animation: tableShake 0.3s infinite alternate;
-    }
+        .table-container {
+            display: flex;
+            justify-content: center;
+            margin: 2rem 0;
+        }
 
-    th, td {
-      border: 2px solid red;
-      padding: 15px;
-      text-align: center;
-      font-size: 1.5rem;
-      color: yellow;
-      background-color: rgba(0, 0, 0, 0.7);
-    }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            max-width: 800px;
+            background: white;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
 
-    th {
-      background-color: rgba(0, 0, 0, 0.9);
-    }
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #f0f0f0;
+        }
 
-    button {
-      background-color: transparent;
-      border: 3px solid lime;
-      color: yellow;
-      padding: 15px 30px;
-      font-size: 1.5rem;
-      text-transform: uppercase;
-      margin-top: 30px;
-      cursor: pointer;
-      animation: shake 0.3s infinite alternate;
-    }
+        th {
+            background: #4A90E2;
+            color: white;
+            font-weight: bold;
+        }
 
-    button:hover {
-      background-color: lime;
-      color
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        tr:hover {
+            background: #f1f7ff;
+        }
+
+        footer {
+            text-align: center;
+            padding: 1rem;
+            background: #4A90E2;
+            color: white;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div>
+            <h1>Vítejte na naší prestižní stránce</h1>
+            <p>Elegance a funkčnost, přesně tak, jak má být.</p>
+        </div>
+    </header>
+    <div class="content">
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Funkce</th>
+                        <th>Popis</th>
+                        <th>Cena</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Prémiový design</td>
+                        <td>Elegantní vzhled, který zaujme.</td>
+                        <td>Zdarma</td>
+                    </tr>
+                    <tr>
+                        <td>Optimalizace</td>
+                        <td>Rychlost a spolehlivost na všech zařízeních.</td>
+                        <td>49 Kč/měsíc</td>
+                    </tr>
+                    <tr>
+                        <td>Technická podpora</td>
+                        <td>24/7 odborná pomoc.</td>
+                        <td>99 Kč/měsíc</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <footer>
+        © 2025 Prestižní stránka. Všechna práva vyhrazena.
+    </footer>
+</body>
+</html>
