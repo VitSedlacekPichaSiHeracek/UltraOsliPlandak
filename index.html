@@ -1,130 +1,137 @@
 <!DOCTYPE html>
-<html lang="cs">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elegantní stránka</title>
-    <style>
-        body {
-            margin: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background: linear-gradient(120deg, #f0f4ff, #e8eaff);
-            color: #333;
-        }
-
-        header {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-image: url('https://via.placeholder.com/1920x1080');
-            background-size: cover;
-            background-position: center;
-            color: white;
-            text-shadow: 0px 2px 5px rgba(0, 0, 0, 0.7);
-            text-align: center;
-        }
-
-        header h1 {
-            font-size: 3rem;
-            margin: 0;
-        }
-
-        header p {
-            font-size: 1.5rem;
-            margin-top: 1rem;
-        }
-
-        .content {
-            padding: 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .table-container {
-            display: flex;
-            justify-content: center;
-            margin: 2rem 0;
-        }
-
-        table {
-            border-collapse: collapse;
-            width: 100%;
-            max-width: 800px;
-            background: white;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        th, td {
-            padding: 1rem;
-            text-align: left;
-            border-bottom: 1px solid #f0f0f0;
-        }
-
-        th {
-            background: #4A90E2;
-            color: white;
-            font-weight: bold;
-        }
-
-        tr:nth-child(even) {
-            background: #f9f9f9;
-        }
-
-        tr:hover {
-            background: #f1f7ff;
-        }
-
-        footer {
-            text-align: center;
-            padding: 1rem;
-            background: #4A90E2;
-            color: white;
-            font-size: 0.9rem;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Super Ugly and Weird Website</title>
+  <style>
+    /* Background color clash */
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #ff00ff; /* Bright pink */
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      font-size: 18px;
+    }
+ 
+    /* Header with contrasting color and weird font */
+    header {
+      text-align: center;
+      background-color: yellow;
+      color: purple;
+      font-size: 3em;
+      padding: 50px;
+      text-transform: uppercase;
+      letter-spacing: 5px;
+    }
+ 
+    /* Centered text in the middle */
+    .center-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 4em;
+      color: green;
+      font-family: 'Courier New', Courier, monospace;
+      text-shadow: 5px 5px 10px red;
+    }
+ 
+    /* Totally random background images */
+    .weird-background {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('https://as2.ftcdn.net/v2/jpg/01/93/26/33/1000_F_193263317_tngAZTWpymDIOTKEBaRDeVsM9WefBnWu.jpg'), url('https://www.w3schools.com/w3images/forest.jpg');
+      background-size: cover;
+      opacity: 0.3;
+      animation: moveBackground 5s linear infinite;
+    }
+ 
+    /* Image shake animation */
+    @keyframes moveBackground {
+      0% { background-position: 0 0; }
+      50% { background-position: 100% 100%; }
+      100% { background-position: 0 0; }
+    }
+ 
+    /* Neon pink box with weird text */
+    .neon-box {
+      border: 5px dashed limegreen;
+      padding: 20px;
+      margin: 20px;
+      background-color: purple;
+      color: yellow;
+      font-size: 1.5em;
+      text-align: center;
+      transform: rotate(15deg);
+      animation: bounce 1s infinite alternate;
+    }
+ 
+    /* Bounce animation */
+    @keyframes bounce {
+      0% { transform: rotate(15deg) translateY(0); }
+      100% { transform: rotate(15deg) translateY(-20px); }
+    }
+ 
+    /* Buttons with absurd styles */
+    button {
+      background-color: orange;
+      color: blue;
+      font-size: 20px;
+      padding: 10px;
+      border: 3px solid red;
+      font-family: 'Comic Sans MS', cursive;
+      cursor: pointer;
+      transition: transform 0.5s;
+    }
+ 
+    button:hover {
+      background-color: green;
+      color: white;
+      transform: scale(1.5) rotate(45deg);
+    }
+ 
+    /* Unusual footer at the bottom */
+    footer {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      text-align: center;
+      background-color: orange;
+      color: black;
+      font-size: 2em;
+      padding: 10px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+ 
+  </style>
 </head>
 <body>
-    <header>
-        <div>
-            <h1>Vítejte na naší prestižní stránce</h1>
-            <p>Elegance a funkčnost, přesně tak, jak má být.</p>
-        </div>
-    </header>
-    <div class="content">
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Funkce</th>
-                        <th>Popis</th>
-                        <th>Cena</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Prémiový design</td>
-                        <td>Elegantní vzhled, který zaujme.</td>
-                        <td>Zdarma</td>
-                    </tr>
-                    <tr>
-                        <td>Optimalizace</td>
-                        <td>Rychlost a spolehlivost na všech zařízeních.</td>
-                        <td>49 Kč/měsíc</td>
-                    </tr>
-                    <tr>
-                        <td>Technická podpora</td>
-                        <td>24/7 odborná pomoc.</td>
-                        <td>99 Kč/měsíc</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <footer>
-        © 2025 Prestižní stránka. Všechna práva vyhrazena.
-    </footer>
+ 
+  <header>
+    ** CHCETE SI VYHONKAT HAMBÁNA?!? **
+  </header>
+a
+  <div class="weird-background"></div>
+a
+  <div class="center-text">
+    ringididiringdingdiding didy diddy dita krausová
+  </div>
+ 
+  <div class="neon-box">
+    VIRUS DETEKONVÁN: https://www.gmvv.cz/
+  </div>
+ 
+  <button>1 klik = jedna liposukce pro deti v africe!</button
+ 
+  <footer>
+Šalamounský baramoun
+  </footer>
+ 
 </body>
 </html>
+ 
