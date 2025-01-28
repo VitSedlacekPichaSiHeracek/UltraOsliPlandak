@@ -1,137 +1,87 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="cs">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Super Ugly and Weird Website</title>
-  <style>
-    /* Background color clash */
-    body {
-      margin: 0;
-      padding: 0;
-      background-color: #ff00ff; /* Bright pink */
-      font-family: 'Comic Sans MS', cursive, sans-serif;
-      font-size: 18px;
-    }
- 
-    /* Header with contrasting color and weird font */
-    header {
-      text-align: center;
-      background-color: yellow;
-      color: purple;
-      font-size: 3em;
-      padding: 50px;
-      text-transform: uppercase;
-      letter-spacing: 5px;
-    }
- 
-    /* Centered text in the middle */
-    .center-text {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 4em;
-      color: green;
-      font-family: 'Courier New', Courier, monospace;
-      text-shadow: 5px 5px 10px red;
-    }
- 
-    /* Totally random background images */
-    .weird-background {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-image: url('https://as2.ftcdn.net/v2/jpg/01/93/26/33/1000_F_193263317_tngAZTWpymDIOTKEBaRDeVsM9WefBnWu.jpg'), url('https://www.w3schools.com/w3images/forest.jpg');
-      background-size: cover;
-      opacity: 0.3;
-      animation: moveBackground 5s linear infinite;
-    }
- 
-    /* Image shake animation */
-    @keyframes moveBackground {
-      0% { background-position: 0 0; }
-      50% { background-position: 100% 100%; }
-      100% { background-position: 0 0; }
-    }
- 
-    /* Neon pink box with weird text */
-    .neon-box {
-      border: 5px dashed limegreen;
-      padding: 20px;
-      margin: 20px;
-      background-color: purple;
-      color: yellow;
-      font-size: 1.5em;
-      text-align: center;
-      transform: rotate(15deg);
-      animation: bounce 1s infinite alternate;
-    }
- 
-    /* Bounce animation */
-    @keyframes bounce {
-      0% { transform: rotate(15deg) translateY(0); }
-      100% { transform: rotate(15deg) translateY(-20px); }
-    }
- 
-    /* Buttons with absurd styles */
-    button {
-      background-color: orange;
-      color: blue;
-      font-size: 20px;
-      padding: 10px;
-      border: 3px solid red;
-      font-family: 'Comic Sans MS', cursive;
-      cursor: pointer;
-      transition: transform 0.5s;
-    }
- 
-    button:hover {
-      background-color: green;
-      color: white;
-      transform: scale(1.5) rotate(45deg);
-    }
- 
-    /* Unusual footer at the bottom */
-    footer {
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-      text-align: center;
-      background-color: orange;
-      color: black;
-      font-size: 2em;
-      padding: 10px;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-    }
- 
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Irind Zelka - Predátor</title>
+    <style>
+        body {
+            background-color: #1b1b1b;
+            color: #e0e0e0;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        h1, h2 {
+            text-align: center;
+            color: #ff3333;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7);
+        }
+        h2 {
+            font-size: 1.5em;
+        }
+        .container {
+            padding: 20px;
+        }
+        .description {
+            font-size: 1.2em;
+            line-height: 1.6;
+            text-align: center;
+            margin-top: 40px;
+        }
+        .predator-image {
+            margin-top: 40px;
+            text-align: center;
+        }
+        .predator-image img {
+            width: 60%;
+            border: 5px solid #ff3333;
+            box-shadow: 0 0 30px rgba(255, 51, 51, 0.6);
+        }
+        .warning {
+            color: #ffcc00;
+            font-size: 1.5em;
+            text-align: center;
+            margin-top: 40px;
+            text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.9);
+        }
+    </style>
 </head>
 <body>
- 
-  <header>
-    ** CHCETE SI VYHONKAT HAMBÁNA?!? **
-  </header>
-a
-  <div class="weird-background"></div>
-a
-  <div class="center-text">
-    ringididiringdingdiding didy diddy dita krausová
-  </div>
- 
-  <div class="neon-box">
-    VIRUS DETEKONVÁN: https://www.gmvv.cz/
-  </div>
- 
-  <button>1 klik = jedna liposukce pro deti v africe!</button
- 
-  <footer>
-Šalamounský baramoun
-  </footer>
- 
+
+    <div class="container">
+        <h1>Irind Zelka</h1>
+        <h2>Predátor z temnoty</h2>
+
+        <div class="description">
+            <p>
+                Irind Zelka je stvoření, jehož existence se stala noční můrou pro všechny, kteří se odvážili
+                přiblížit do temných koutů světa. Jméno Irind Zelka je šepotáno ve strachu a jeho přítomnost
+                se dá cítit ještě dlouho poté, co zmizí z dohledu. Jeho oči, které září jako oheň v noci, a
+                tiché kroky, které se rozléhají v tichu, jsou jeho poznávacími znameními.
+            </p>
+            <p>
+                Tento predátor je známý svou schopností manipulovat s myslí svých obětí. Každý, kdo se s ním setkal,
+                nikdy nezůstal stejný. Ti, kteří přežili, často popisují podivné pocity, temné vize a
+                strašlivý strach, který je pronásleduje po zbytek jejich života.
+            </p>
+            <p>
+                Nikdo neví, co Irind Zelka skutečně je. Někteří tvrdí, že je to stvoření z jiného světa, jiní ho
+                vidí jako temnou energii, která se formuje do podoby predátora. Ať už je to cokoli, jedno je jisté:
+                jeho přítomnost je vždy smrtelně nebezpečná.
+            </p>
+        </div>
+
+        <div class="warning">
+            <p>Varování: Nikdy nezkoušejte hledat Irinda Zelku. Pokud se k němu přiblížíte, může vás to stát život.</p>
+        </div>
+
+        <div class="predator-image">
+            <h2>Obraz Irinda Zelky</h2>
+            <img src="https://www.olympijskytym.cz/image_min.php?file=https://odm.olympic.cz/upload/participation/photo/37095c352d0e27b52b28c625eb07a7eb1684f3b0.jpg&w=958&h=638" alt="Irind Zelka" />
+        </div>
+    </div>
+
 </body>
 </html>
- 
