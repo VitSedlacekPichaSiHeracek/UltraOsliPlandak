@@ -1,88 +1,141 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
- <link rel="shortcut icon" type="image/https://www.olympijskytym.cz/image_min.php?file=https://odm.olympic.cz/upload/participation/photo/37095c352d0e27b52b28c625eb07a7eb1684f3b0.jpg&w=958&h=638" href="favicon.ico">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Irind Zelka - Predátor</title>
+    <title>Exotická ZOO - Naši "Zvířata"</title>
     <style>
+        /* Global styles */
         body {
-            background-color: #1b1b1b;
-            color: #e0e0e0;
             font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
         }
-        h1, h2 {
+        header {
+            background-color: #222;
+            color: #fff;
+            padding: 20px;
             text-align: center;
-            color: #ff3333;
-            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7);
         }
-        h2 {
-            font-size: 1.5em;
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
         }
+        header p {
+            font-size: 1.2em;
+            margin-top: 10px;
+        }
+
+        /* Container styles */
         .container {
+            max-width: 1200px;
+            margin: 0 auto;
             padding: 20px;
         }
-        .description {
-            font-size: 1.2em;
+
+        /* Section styles */
+        .animals {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin-top: 40px;
+        }
+        .animal-card {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        .animal-card:hover {
+            transform: scale(1.05);
+        }
+
+        .animal-card h2 {
+            font-size: 2em;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        .animal-card p {
+            font-size: 1.1em;
+            color: #666;
             line-height: 1.6;
-            text-align: center;
-            margin-top: 40px;
         }
-        .predator-image {
-            margin-top: 40px;
-            text-align: center;
+        .danger {
+            color: #ff0000;
+            font-weight: bold;
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.4);
+            border: 2px solid red;
+            padding: 5px;
+            border-radius: 5px;
         }
-        .predator-image img {
-            width: 60%;
-            border: 5px solid #ff3333;
-            box-shadow: 0 0 30px rgba(255, 51, 51, 0.6);
+        .fat {
+            color: #ff8c00;
+            font-weight: bold;
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.4);
+            border: 2px solid orange;
+            padding: 5px;
+            border-radius: 5px;
         }
-        .warning {
-            color: #ffcc00;
-            font-size: 1.5em;
+
+        /* Footer styles */
+        footer {
+            background-color: #222;
+            color: #fff;
             text-align: center;
-            margin-top: 40px;
-            text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            margin-top: 50px;
+        }
+        footer p {
+            margin: 0;
         }
     </style>
 </head>
 <body>
 
+    <!-- Header -->
+    <header>
+        <h1>Exotická ZOO</h1>
+        <p>Navštivte naši ZOO a objevte jedinečné "zvířata"!</p>
+    </header>
+
+    <!-- Main Content -->
     <div class="container">
-        <h1>Irind Zelka</h1>
-        <h2>Predátor z temnoty</h2>
+        <section class="animals">
+            <!-- Irind Zelka -->
+            <div class="animal-card">
+                <h2 class="danger">Irind Zelka - Nebezpečný</h2>
+                <p>Irind Zelka je stvoření z legend, jehož oči září rudě a jeho přítomnost znamená smrt. Tento predátor, známý svou neuvěřitelnou rychlostí a nenasytným apetitem, je považován za jednoho z nejnebezpečnějších jedinců v tomto „království“. Kdokoliv se dostane do jeho blízkosti, už nikdy nevyjde živý.</p>
+            </div>
 
-        <div class="description">
-            <p>
-                Irind Zelka je stvoření, jehož existence se stala noční můrou pro všechny, kteří se odvážili
-                přiblížit do temných koutů světa. Jméno Irind Zelka je šepotáno ve strachu a jeho přítomnost
-                se dá cítit ještě dlouho poté, co zmizí z dohledu. Jeho oči, které září jako oheň v noci, a
-                tiché kroky, které se rozléhají v tichu, jsou jeho poznávacími znameními.
-            </p>
-            <p>
-                Tento predátor je známý svou schopností manipulovat s myslí svých obětí. Každý, kdo se s ním setkal,
-                nikdy nezůstal stejný. Ti, kteří přežili, často popisují podivné pocity, temné vize a
-                strašlivý strach, který je pronásleduje po zbytek jejich života.
-            </p>
-            <p>
-                Nikdo neví, co Irind Zelka skutečně je. Někteří tvrdí, že je to stvoření z jiného světa, jiní ho
-                vidí jako temnou energii, která se formuje do podoby predátora. Ať už je to cokoli, jedno je jisté:
-                jeho přítomnost je vždy smrtelně nebezpečná.
-            </p>
-        </div>
+            <!-- Adam Roth -->
+            <div class="animal-card">
+                <h2 class="fat">Adam Roth - Tlustý</h2>
+                <p>Adam Roth je jedním z nejznámějších členů této zoologické sbírky, jehož impozantní postava není jen projevem obezity, ale i odolnosti. Tento "zvířecí" exemplář dokáže se svou hmotností přežít téměř každou situaci. I přes jeho velkou váhu se pohybuje s překvapivou obratností a je známý svou schopností spát i 18 hodin denně.</p>
+            </div>
 
-        <div class="warning">
-            <p>Varování: Nikdy nezkoušejte hledat Irinda Zelku. Pokud se k němu přiblížíte, může vás to stát život.</p>
-        </div>
+            <!-- Štěpán Urbánek -->
+            <div class="animal-card">
+                <h2>Štěpán Urbánek</h2>
+                <p>Štěpán Urbánek je klidný, ale záhadný. Jeho schopnost přizpůsobit se jakémukoliv prostředí je legendární. Málokdo ví, co se děje v jeho mysli, ale je považován za jedinečného ve své schopnosti přežít v těch nejnehostinnějších podmínkách. Není agresivní, ale jeho přítomnost vždy zanechá silný dojem.</p>
+            </div>
 
-        <div class="predator-image">
-            <h2>Obraz Irinda Zelky</h2>
-            <img src="https://www.olympijskytym.cz/image_min.php?file=https://odm.olympic.cz/upload/participation/photo/37095c352d0e27b52b28c625eb07a7eb1684f3b0.jpg&w=958&h=638" alt="Irind Zelka" />
-        </div>
+            <!-- Timofej Golobokov -->
+            <div class="animal-card">
+                <h2>Timofej Golobokov</h2>
+                <p>Timofej Golobokov je tajemný a nepolapitelný. Málokdo ho kdy viděl v plné síle, ale když se objeví, nikdy to není náhoda. Je známý svou inteligencí a schopností organizovat neuvěřitelně složité strategie. Mnozí si ho pletou s přízrakem, ale jedno je jisté – jeho přítomnost je vždy signálem něčeho velkého.</p>
+            </div>
+        </section>
     </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Exotická ZOO. Všechna práva vyhrazena.</p>
+    </footer>
 
 </body>
 </html>
+
