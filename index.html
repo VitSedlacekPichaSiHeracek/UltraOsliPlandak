@@ -6,24 +6,56 @@
     <title>iDrugs – Revoluce ve světě substancí</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <script defer src="script.js"></script>
 </head>
 <body>
     <header>
         <h1>iDrugs – Čistý zážitek</h1>
         <nav>
             <ul>
-                <li><a href="index.html">Domů</a></li>
-                <li><a href="about.html">O nás</a></li>
-                <li><a href="products.html">Naše produkty</a></li>
+                <li><a href="#home">Domů</a></li>
+                <li><a href="#about">O nás</a></li>
+                <li><a href="#products">Naše produkty</a></li>
+                <li><a href="#contact">Kontakt</a></li>
+                <li><a href="#cart">🛒 Košík (<span id="cart-count">0</span>)</a></li>
             </ul>
         </nav>
     </header>
     <main>
-        <section>
+        <section id="home" class="hero">
             <h2>Objevte budoucnost chemie</h2>
             <p>Vysoce kvalitní substance pro moderní životní styl. Legální, efektivní, revoluční.</p>
             <img src="idrop.jpg" alt="Minimalistický obrázek lahvičky s kapkami iDrugs">
-            <button>Nakupovat nyní</button>
+            <a href="#products" class="btn">Nakupovat nyní</a>
+        </section>
+        
+        <section id="products" class="products">
+            <h2>Naše nejlepší produkty</h2>
+            <div class="product">
+                <img src="energy-beans.jpg" alt="Energetické fazole">
+                <h3>Energetické fazole</h3>
+                <p>Zapomeňte na kávu. Tyto fazole vás probudí na týden.</p>
+                <button class="add-to-cart" data-name="Energetické fazole" data-price="299">Přidat do košíku</button>
+            </div>
+            <div class="product">
+                <img src="invisibility-pills.jpg" alt="Neviditelné prášky">
+                <h3>Neviditelné prášky</h3>
+                <p>Nikdo vás neuvidí… alespoň si to budete myslet.</p>
+                <button class="add-to-cart" data-name="Neviditelné prášky" data-price="499">Přidat do košíku</button>
+            </div>
+            <div class="product">
+                <img src="focus-drops.jpg" alt="Kapky soustředění">
+                <h3>Kapky soustředění</h3>
+                <p>Dokončete práci za minutu a ještě si pamatujte vzorec na vodu.</p>
+                <button class="add-to-cart" data-name="Kapky soustředění" data-price="399">Přidat do košíku</button>
+            </div>
+        </section>
+        
+        <section id="cart" class="cart">
+            <h2>Váš košík</h2>
+            <ul id="cart-items"></ul>
+            <p>Celková cena: <span id="total-price">0</span> Kč</p>
+            <button id="checkout">Objednat</button>
         </section>
     </main>
     <footer>
