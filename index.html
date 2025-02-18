@@ -3,151 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Exotická ZOO - Naši "Zvířata"</title>
-    <style>
-        /* Global styles */
-        body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-            color: #333;
-        }
-        header {
-            background-color: #222;
-            color: #fff;
-            padding: 20px;
-            text-align: center;
-        }
-        header h1 {
-            margin: 0;
-            font-size: 2.5em;
-        }
-        header p {
-            font-size: 1.2em;
-            margin-top: 10px;
-        }
-
-        /* Container styles */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        /* Section styles */
-        .animals {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 30px;
-            margin-top: 40px;
-        }
-        .animal-card {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease;
-        }
-        .animal-card:hover {
-            transform: scale(1.05);
-        }
-
-        .animal-card h2 {
-            font-size: 2em;
-            color: #333;
-            margin-bottom: 15px;
-        }
-        .animal-card p {
-            font-size: 1.1em;
-            color: #666;
-            line-height: 1.6;
-        }
-        .danger {
-            color: #ff0000;
-            font-weight: bold;
-            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.4);
-            border: 2px solid red;
-            padding: 5px;
-            border-radius: 5px;
-        }
-        .fat {
-            color: #ff8c00;
-            font-weight: bold;
-            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.4);
-            border: 2px solid orange;
-            padding: 5px;
-            border-radius: 5px;
-        }
-
-        /* Image styles */
-        .animal-card img {
-            width: 100%;
-            height: auto;
-            border-radius: 8px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-            margin-bottom: 20px;
-        }
-
-        /* Footer styles */
-        footer {
-            background-color: #222;
-            color: #fff;
-            text-align: center;
-            padding: 20px;
-            margin-top: 50px;
-        }
-        footer p {
-            margin: 0;
-        }
-    </style>
+    <title>iDrugs – Revoluce ve světě substancí</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
 </head>
 <body>
-
-    <!-- Header -->
     <header>
-        <h1>Exotická ZOO</h1>
-        <p>Navštivte naši ZOO a objevte jedinečné "zvířata"!</p>
+        <h1>iDrugs – Čistý zážitek</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Domů</a></li>
+                <li><a href="about.html">O nás</a></li>
+                <li><a href="products.html">Naše produkty</a></li>
+            </ul>
+        </nav>
     </header>
-
-    <!-- Main Content -->
-    <div class="container">
-        <section class="animals">
-            <!-- Irind Zelka -->
-            <div class="animal-card">
-                <img src="https://via.placeholder.com/500x300?text=Irind+Zelka" alt="Irind Zelka">
-                <h2 class="danger">Irind Zelka - Nebezpečný</h2>
-                <p>Irind Zelka je stvoření z legend, jehož oči září rudě a jeho přítomnost znamená smrt. Tento predátor, známý svou neuvěřitelnou rychlostí a nenasytným apetitem, je považován za jednoho z nejnebezpečnějších jedinců v tomto „království“. Kdokoliv se dostane do jeho blízkosti, už nikdy nevyjde živý.</p>
-            </div>
-
-            <!-- Adam Roth -->
-            <div class="animal-card">
-                <img src="https://via.placeholder.com/500x300?text=Adam+Roth" alt="Adam Roth">
-                <h2 class="fat">Adam Roth - Tlustý</h2>
-                <p>Adam Roth je jedním z nejznámějších členů této zoologické sbírky, jehož impozantní postava není jen projevem obezity, ale i odolnosti. Tento "zvířecí" exemplář dokáže se svou hmotností přežít téměř každou situaci. I přes jeho velkou váhu se pohybuje s překvapivou obratností a je známý svou schopností spát i 18 hodin denně.</p>
-            </div>
-
-            <!-- Štěpán Urbánek -->
-            <div class="animal-card">
-                <img src="https://i3.cn.cz/15/1211292421_urbanek-petr.jpgtext=Štěpán+Urbánek" alt="Štěpán Urbánek">
-                <h2>Štěpán Urbánek- Dlouhán</h2>
-                <p>Štěpán Urbánek je klidný, ale záhadný. Jeho schopnost přizpůsobit se jakémukoliv prostředí je legendární. Málokdo ví, co se děje v jeho mysli, ale je považován za jedinečného ve své schopnosti přežít v těch nejnehostinnějších podmínkách. Není agresivní, ale jeho přítomnost vždy zanechá silný dojem.</p>
-            </div>
-
-            <!-- Timofej Golobokov -->
-            <div class="animal-card">
-                <img src="https://via.placeholder.com/500x300?text=Timofej+Golobokov" alt="Timofej Golobokov">
-                <h2>Timofej Golobokov - Kvaj Čan Dou</h2>
-                <p>Timofej Golobokov je tajemný a nepolapitelný. Málokdo ho kdy viděl v plné síle, ale když se objeví, nikdy to není náhoda. Je známý svou inteligencí a schopností organizovat neuvěřitelně složité strategie. Mnozí si ho pletou s přízrakem, ale jedno je jisté – jeho přítomnost je vždy signálem něčeho velkého.</p>
-            </div>
+    <main>
+        <section>
+            <h2>Objevte budoucnost chemie</h2>
+            <p>Vysoce kvalitní substance pro moderní životní styl. Legální, efektivní, revoluční.</p>
+            <img src="idrop.jpg" alt="Minimalistický obrázek lahvičky s kapkami iDrugs">
+            <button>Nakupovat nyní</button>
         </section>
-    </div>
-
-    <!-- Footer -->
+    </main>
     <footer>
-        <p>&copy; 2025 Exotická ZOO. Všechna práva vyhrazena.</p>
+        <p>Pouze pro studijní účely</p>
     </footer>
-
 </body>
 </html>
