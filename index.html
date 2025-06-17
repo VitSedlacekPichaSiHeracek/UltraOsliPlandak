@@ -1,34 +1,114 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>🚀 Space Shooter Deluxe</title>
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      background: #000;
-      overflow: hidden;
-      font-family: 'Orbitron', sans-serif;
-      color: white;
-    }
-    canvas {
-      display: block;
-      margin: auto;
-      border: 5px solid #00ffcc;
-      background: radial-gradient(ellipse at center, #000 0%, #030303 100%);
-    }
-    #ui {
-      position: absolute;
-      top: 10px;
-      left: 50%;
-      transform: translateX(-50%);
-      text-align: center;
-      font-size: 18px;
-      color: #0ff;
-      text-shadow: 1px 1px 2px #000;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>🚀 Space Shooter Deluxe - Ultimate Edition</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron&display=swap');
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: #000;
+    overflow: hidden;
+    font-family: 'Orbitron', sans-serif;
+    color: #0ff;
+    user-select: none;
+  }
+  canvas {
+    display: block;
+    margin: auto;
+    border: 5px solid #00ffcc;
+    background: radial-gradient(ellipse at center, #000 0%, #030303 100%);
+    touch-action: none;
+  }
+  #ui {
+    position: fixed;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    font-size: 18px;
+    color: #0ff;
+    text-shadow: 1px 1px 2px #000;
+    user-select: none;
+    z-index: 10;
+  }
+  #controls {
+    position: fixed;
+    bottom: 15px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    user-select: none;
+    z-index: 11;
+  }
+  .btn {
+    background: #00ffcc;
+    border-radius: 50%;
+    width: 70px;
+    height: 70px;
+    box-shadow: 0 0 10px #00ffcc;
+    color: #000;
+    font-weight: bold;
+    font-size: 28px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    touch-action: manipulation;
+    user-select: none;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  .btn:active {
+    background: #00b399;
+  }
+  #pauseMsg {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #0ff;
+    font-size: 36px;
+    text-shadow: 2px 2px 5px #000;
+    display: none;
+    user-select: none;
+    z-index: 20;
+  }
+  #retryBtn {
+    position: fixed;
+    top: 60%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #00ffcc;
+    border: none;
+    border-radius: 10px;
+    padding: 15px 40px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #000;
+    cursor: pointer;
+    display: none;
+    z-index: 21;
+    user-select: none;
+  }
+  #muteBtn {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background: #00ffcc;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #000;
+    cursor: pointer;
+    user-select: none;
+    z-index: 11;
+  }
+</style>
 </head>
 <body>
   <div id="ui">
@@ -37,159 +117,315 @@
     <div>🌊 Wave: <span id="wave">1</span></div>
     <div>🏆 High Score: <span id="highscore">0</span></div>
   </div>
+
+  <button id="muteBtn">Mute 🔊</button>
+  <div id="pauseMsg">PAUSED</div>
+  <button id="retryBtn">Retry</button>
+
   <canvas id="game" width="480" height="640"></canvas>
 
-  <script>
-    const canvas = document.getElementById("game");
-    const ctx = canvas.getContext("2d");
+  <div id="controls">
+    <div class="btn" id="leftBtn">◀️</div>
+    <div class="btn" id="shootBtn">🔥</div>
+    <div class="btn" id="rightBtn">▶️</div>
+  </div>
 
-    const keys = {};
-    document.addEventListener("keydown", e => keys[e.key] = true);
-    document.addEventListener("keyup", e => keys[e.key] = false);
+<script>
+  const canvas = document.getElementById("game");
+  const ctx = canvas.getContext("2d");
 
-    let score = 0, wave = 1, health = 3;
-    let highscore = localStorage.getItem("spaceHighScore") || 0;
-    document.getElementById("highscore").textContent = highscore;
+  // UI Elements
+  const scoreEl = document.getElementById("score");
+  const healthEl = document.getElementById("health");
+  const waveEl = document.getElementById("wave");
+  const highscoreEl = document.getElementById("highscore");
+  const pauseMsg = document.getElementById("pauseMsg");
+  const retryBtn = document.getElementById("retryBtn");
+  const muteBtn = document.getElementById("muteBtn");
 
-    class Player {
-      constructor() {
-        this.w = 32;
-        this.h = 26;
-        this.x = canvas.width / 2 - this.w / 2;
-        this.y = canvas.height - 60;
-        this.speed = 2.5;
-        this.cooldown = 0;
-        this.bullets = [];
-        this.powerUp = false;
-        this.powerTime = 0;
-      }
-      update() {
-        if (keys["ArrowLeft"] && this.x > 0) this.x -= this.speed;
-        if (keys["ArrowRight"] && this.x + this.w < canvas.width) this.x += this.speed;
-        if (keys[" "] || keys["z"]) this.shoot();
+  // Controls for mobile
+  const leftBtn = document.getElementById("leftBtn");
+  const rightBtn = document.getElementById("rightBtn");
+  const shootBtn = document.getElementById("shootBtn");
+
+  let keys = {};
+  document.addEventListener("keydown", e => {
+    keys[e.key.toLowerCase()] = true;
+    if (e.key.toLowerCase() === 'p') togglePause();
+  });
+  document.addEventListener("keyup", e => {
+    keys[e.key.toLowerCase()] = false;
+  });
+
+  // Mobile control handling
+  let mobileControls = { left: false, right: false, shoot: false };
+  leftBtn.addEventListener("touchstart", e => { e.preventDefault(); mobileControls.left = true; });
+  leftBtn.addEventListener("touchend", e => { e.preventDefault(); mobileControls.left = false; });
+  rightBtn.addEventListener("touchstart", e => { e.preventDefault(); mobileControls.right = true; });
+  rightBtn.addEventListener("touchend", e => { e.preventDefault(); mobileControls.right = false; });
+  shootBtn.addEventListener("touchstart", e => { e.preventDefault(); mobileControls.shoot = true; });
+  shootBtn.addEventListener("touchend", e => { e.preventDefault(); mobileControls.shoot = false; });
+
+  // Game variables
+  let score = 0;
+  let wave = 1;
+  let health = 3;
+  let highscore = localStorage.getItem("spaceHighScore") || 0;
+  highscoreEl.textContent = highscore;
+
+  let paused = false;
+  let gameOverFlag = false;
+
+  // Sound setup
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  let muted = false;
+
+  muteBtn.onclick = () => {
+    muted = !muted;
+    muteBtn.textContent = muted ? "Unmute 🔈" : "Mute 🔊";
+    if (muted) audioCtx.suspend();
+    else audioCtx.resume();
+  };
+
+  function playSound(freq, type = 'square', duration = 0.1, volume=0.1) {
+    if(muted) return;
+    const osc = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+    osc.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    osc.type = type;
+    osc.frequency.value = freq;
+    gainNode.gain.value = volume;
+    osc.start();
+    osc.stop(audioCtx.currentTime + duration);
+  }
+
+  // Background music (looping simple melody)
+  let musicOsc = null;
+  function playMusic() {
+    if(muted) return;
+    if (musicOsc) return; // already playing
+    musicOsc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    musicOsc.connect(gain);
+    gain.connect(audioCtx.destination);
+    gain.gain.value = 0.03;
+    musicOsc.type = "triangle";
+    let notes = [261.63, 293.66, 329.63, 349.23, 392.00];
+    let idx = 0;
+    musicOsc.frequency.setValueAtTime(notes[idx], audioCtx.currentTime);
+    musicOsc.start();
+
+    function nextNote() {
+      idx = (idx + 1) % notes.length;
+      musicOsc.frequency.linearRampToValueAtTime(notes[idx], audioCtx.currentTime + 0.3);
+      setTimeout(nextNote, 500);
+    }
+    nextNote();
+
+    musicOsc.stopTimer = setTimeout(() => {
+      musicOsc.stop();
+      musicOsc = null;
+    }, 100000); // stop after 100s to avoid leak
+  }
+  playMusic();
+
+  // Game Classes
+  class Player {
+    constructor() {
+      this.w = 36;
+      this.h = 28;
+      this.x = canvas.width / 2 - this.w / 2;
+      this.y = canvas.height - 70;
+      this.speed = 2;
+      this.cooldown = 0;
+      this.bullets = [];
+      this.powerUp = false;
+      this.powerTime = 0;
+    }
+    update() {
+      if (!paused && !gameOverFlag) {
+        if ((keys["arrowleft"] || mobileControls.left) && this.x > 0) this.x -= this.speed;
+        if ((keys["arrowright"] || mobileControls.right) && this.x + this.w < canvas.width) this.x += this.speed;
+        if ((keys[" "] || keys["z"] || mobileControls.shoot)) this.shoot();
+
         if (this.cooldown > 0) this.cooldown--;
-
         this.bullets.forEach(b => b.update());
         this.bullets = this.bullets.filter(b => b.y > -20);
 
         if (this.powerUp && --this.powerTime <= 0) this.powerUp = false;
       }
-      draw() {
-        ctx.fillStyle = this.powerUp ? "#ff0" : "#0ff";
-        ctx.beginPath();
-        ctx.moveTo(this.x + this.w / 2, this.y);
-        ctx.lineTo(this.x, this.y + this.h);
-        ctx.lineTo(this.x + this.w, this.y + this.h);
-        ctx.closePath();
-        ctx.fill();
-        this.bullets.forEach(b => b.draw());
-      }
-      shoot() {
-        if (this.cooldown <= 0) {
-          this.bullets.push(new Bullet(this.x + this.w / 2, this.y));
-          if (this.powerUp) {
-            this.bullets.push(new Bullet(this.x + 5, this.y, -1));
-            this.bullets.push(new Bullet(this.x + this.w - 5, this.y, 1));
-          }
-          this.cooldown = this.powerUp ? 5 : 12;
+    }
+    draw() {
+      // Player ship - polygon shaped
+      ctx.fillStyle = this.powerUp ? "#ff0" : "#0ff";
+      ctx.beginPath();
+      ctx.moveTo(this.x + this.w / 2, this.y);
+      ctx.lineTo(this.x, this.y + this.h);
+      ctx.lineTo(this.x + this.w * 0.3, this.y + this.h * 0.7);
+      ctx.lineTo(this.x + this.w * 0.7, this.y + this.h * 0.7);
+      ctx.lineTo(this.x + this.w, this.y + this.h);
+      ctx.closePath();
+      ctx.fill();
+
+      this.bullets.forEach(b => b.draw());
+    }
+    shoot() {
+      if (!paused && !gameOverFlag && this.cooldown <= 0) {
+        this.bullets.push(new Bullet(this.x + this.w / 2, this.y));
+        if (this.powerUp) {
+          this.bullets.push(new Bullet(this.x + 8, this.y, -1));
+          this.bullets.push(new Bullet(this.x + this.w - 8, this.y, 1));
         }
+        this.cooldown = this.powerUp ? 5 : 12;
+        playSound(600, 'square', 0.05, 0.15);
       }
     }
+  }
 
-    class Bullet {
-      constructor(x, y, dx = 0) {
-        this.x = x;
-        this.y = y;
-        this.r = 3;
-        this.speed = 5;
-        this.dx = dx;
-      }
-      update() {
-        this.y -= this.speed;
-        this.x += this.dx;
-      }
-      draw() {
-        ctx.fillStyle = "#ff0";
+  class Bullet {
+    constructor(x, y, dx = 0) {
+      this.x = x;
+      this.y = y;
+      this.r = 4;
+      this.speed = 6;
+      this.dx = dx;
+    }
+    update() {
+      this.y -= this.speed;
+      this.x += this.dx * 3;
+    }
+    draw() {
+      ctx.fillStyle = "#ff0";
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  class Enemy {
+    constructor(x, y, speed, hp, type = "normal") {
+      this.x = x;
+      this.y = y;
+      this.w = 34;
+      this.h = 22;
+      this.speed = speed;
+      this.hp = hp;
+      this.type = type;
+      this.dir = Math.random() < 0.5 ? -1 : 1;
+      this.moveTimer = 0;
+    }
+    update() {
+      if (paused || gameOverFlag) return;
+      this.y += this.speed;
+      this.moveTimer++;
+      if(this.moveTimer % 20 === 0) this.dir *= -1;  // zigzag
+      this.x += this.dir * 0.4;
+      if (this.x < 0) this.x = 0;
+      if (this.x + this.w > canvas.width) this.x = canvas.width - this.w;
+    }
+    draw() {
+      // Enemy shape - stylized triangle + eye for boss
+      ctx.fillStyle = this.type === "boss" ? "#f00" : "#0f0";
+      ctx.beginPath();
+      ctx.moveTo(this.x + this.w / 2, this.y);
+      ctx.lineTo(this.x, this.y + this.h);
+      ctx.lineTo(this.x + this.w, this.y + this.h);
+      ctx.closePath();
+      ctx.fill();
+      if(this.type === "boss") {
+        ctx.fillStyle = "#fff";
         ctx.beginPath();
-        ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+        ctx.arc(this.x + this.w / 2, this.y + this.h * 0.5, 5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = "#000";
+        ctx.beginPath();
+        ctx.arc(this.x + this.w / 2, this.y + this.h * 0.5, 2, 0, Math.PI * 2);
         ctx.fill();
       }
     }
+  }
 
-    class Enemy {
-      constructor(x, y, speed, hp, type = "normal") {
-        this.x = x;
-        this.y = y;
-        this.w = 30;
-        this.h = 20;
-        this.speed = speed;
-        this.hp = hp;
-        this.type = type;
-        this.dir = Math.random() < 0.5 ? -1 : 1;
-      }
-      update() {
-        this.y += this.speed;
-        this.x += this.dir * 0.3;
-        if (this.x < 0 || this.x + this.w > canvas.width) this.dir *= -1;
-      }
-      draw() {
-        ctx.fillStyle = this.type === "boss" ? "#f00" : "#0f0";
-        ctx.fillRect(this.x, this.y, this.w, this.h);
-      }
+  class PowerUp {
+    constructor(x, y) {
+      this.x = x;
+      this.y = y;
+      this.r = 9;
+      this.speed = 1.5;
+      this.angle = 0;
     }
-
-    class PowerUp {
-      constructor(x, y) {
-        this.x = x;
-        this.y = y;
-        this.r = 8;
-        this.speed = 1.5;
-      }
-      update() {
-        this.y += this.speed;
-      }
-      draw() {
-        ctx.fillStyle = "#ff0";
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
-        ctx.fill();
-      }
+    update() {
+      if(paused || gameOverFlag) return;
+      this.y += this.speed;
+      this.angle += 0.1;
     }
-
-    const player = new Player();
-    let enemies = [];
-    let powerUps = [];
-    let waveCooldown = 0;
-
-    function spawnWave() {
-      enemies = [];
-      const count = 6 + wave * 2;
-      for (let i = 0; i < count; i++) {
-        const x = Math.random() * (canvas.width - 30);
-        const y = -Math.random() * 300;
-        enemies.push(new Enemy(x, y, 0.6 + wave * 0.15, 1));
+    draw() {
+      ctx.save();
+      ctx.translate(this.x, this.y);
+      ctx.rotate(this.angle);
+      ctx.strokeStyle = "#ff0";
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      for(let i=0; i<5; i++) {
+        ctx.lineTo(0, this.r);
+        ctx.translate(0, this.r);
+        ctx.rotate((Math.PI * 2 / 10));
+        ctx.lineTo(0, -this.r);
+        ctx.translate(0, -this.r);
+        ctx.rotate(-(Math.PI * 6 / 10));
       }
-      if (wave % 5 === 0) {
-        enemies.push(new Enemy(canvas.width / 2 - 30, -100, 1, 20, "boss"));
-      }
+      ctx.closePath();
+      ctx.stroke();
+      ctx.restore();
     }
+  }
 
-    function updateUI() {
-      document.getElementById("score").textContent = score;
-      document.getElementById("health").textContent = health;
-      document.getElementById("wave").textContent = wave;
+  const player = new Player();
+  let enemies = [];
+  let powerUps = [];
+  let waveCooldown = 0;
+
+  function spawnWave() {
+    enemies = [];
+    const count = 5 + wave * 2;
+    for (let i = 0; i < count; i++) {
+      const x = Math.random() * (canvas.width - 34);
+      const y = -Math.random() * 300 - 50;
+      enemies.push(new Enemy(x, y, 0.4 + wave * 0.12, 1));
     }
+    if (wave % 5 === 0) {
+      enemies.push(new Enemy(canvas.width / 2 - 34 / 2, -150, 0.8, 25, "boss"));
+    }
+  }
 
-    function update() {
+  function updateUI() {
+    scoreEl.textContent = score;
+    healthEl.textContent = health;
+    waveEl.textContent = wave;
+  }
+
+  function togglePause() {
+    if (gameOverFlag) return;
+    paused = !paused;
+    pauseMsg.style.display = paused ? "block" : "none";
+    if(!paused && !muted) audioCtx.resume();
+  }
+
+  function update() {
+    if (!paused && !gameOverFlag) {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       player.update();
       player.draw();
 
-      enemies.forEach(e => e.update());
-      enemies.forEach(e => e.draw());
+      enemies.forEach(e => {
+        e.update();
+        e.draw();
+      });
 
-      powerUps.forEach(p => p.update());
-      powerUps.forEach(p => p.draw());
+      powerUps.forEach(p => {
+        p.update();
+        p.draw();
+      });
 
       // Bullet vs Enemy
       for (let b of player.bullets) {
@@ -197,9 +433,10 @@
           if (b.x > e.x && b.x < e.x + e.w && b.y > e.y && b.y < e.y + e.h) {
             e.hp--;
             b.y = -999;
+            playSound(900, 'sine', 0.07, 0.12);
             if (e.hp <= 0) {
-              score += e.type === "boss" ? 100 : 10;
-              if (Math.random() < 0.1) {
+              score += e.type === "boss" ? 150 : 10;
+              if (Math.random() < 0.15) {
                 powerUps.push(new PowerUp(e.x + e.w / 2, e.y));
               }
               e.y = canvas.height + 99;
@@ -212,7 +449,7 @@
       enemies = enemies.filter(e => e.y < canvas.height + 20);
       powerUps = powerUps.filter(p => p.y < canvas.height + 20);
 
-      // Enemy vs Player
+      // Enemy vs Player collision
       for (let e of enemies) {
         if (
           e.y + e.h >= player.y &&
@@ -221,6 +458,7 @@
         ) {
           health--;
           e.y = canvas.height + 100;
+          playSound(120, 'triangle', 0.3, 0.3);
           if (health <= 0) return gameOver();
           updateUI();
         }
@@ -234,35 +472,60 @@
           p.x < player.x + player.w
         ) {
           player.powerUp = true;
-          player.powerTime = 400;
+          player.powerTime = 600;
+          playSound(1000, 'square', 0.2, 0.3);
           return false;
         }
         return true;
       });
 
+      // Wave progression
       if (enemies.length === 0 && waveCooldown <= 0) {
         wave++;
-        waveCooldown = 60;
+        waveCooldown = 90;
         updateUI();
       }
-      if (waveCooldown > 0 && --waveCooldown === 0) spawnWave();
+      if (waveCooldown > 0) waveCooldown--;
 
-      requestAnimationFrame(update);
+      if (waveCooldown === 0 && enemies.length === 0) spawnWave();
     }
 
-    function gameOver() {
-      ctx.fillStyle = "white";
-      ctx.font = "32px Orbitron, sans-serif";
-      ctx.fillText("GAME OVER", canvas.width / 2 - 100, canvas.height / 2);
-      if (score > highscore) {
-        localStorage.setItem("spaceHighScore", score);
-        document.getElementById("highscore").textContent = score;
-      }
-    }
+    requestAnimationFrame(update);
+  }
 
-    spawnWave();
+  function gameOver() {
+    gameOverFlag = true;
+    ctx.fillStyle = "white";
+    ctx.font = "48px Orbitron, sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText("GAME OVER", canvas.width / 2, canvas.height / 2 - 40);
+    ctx.font = "24px Orbitron, sans-serif";
+    ctx.fillText(`Final Score: ${score}`, canvas.width / 2, canvas.height / 2);
+    retryBtn.style.display = "block";
+
+    if (score > highscore) {
+      localStorage.setItem("spaceHighScore", score);
+      highscoreEl.textContent = score;
+    }
+  }
+
+  retryBtn.onclick = () => {
+    // Reset game state
+    score = 0;
+    wave = 1;
+    health = 3;
+    gameOverFlag = false;
+    retryBtn.style.display = "none";
     updateUI();
-    update();
-  </script>
+    spawnWave();
+    if(paused) togglePause();
+  };
+
+  // Initialize game
+  spawnWave();
+  updateUI();
+  update();
+
+</script>
 </body>
 </html>
