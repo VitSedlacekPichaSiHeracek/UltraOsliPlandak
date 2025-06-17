@@ -1,181 +1,135 @@
-const logEl = document.getElementById("log");
-const playerStatsEl = document.getElementById("playerStats");
-const gameScreen = document.getElementById("gameScreen");
-const highScoreEl = document.getElementById("highScore");
+// ----- Add these globals for the map -----
 
-let highScore = parseInt(localStorage.getItem("highScore")) || 0;
-highScoreEl.textContent = highScore;
+const MAP_SIZE = 3;
+let playerPos = { x: 1, y: 1 };  // start in center
+let mapGrid = [];
+let clearedRooms = new Set(); // store cleared fight rooms as "x,y"
+let currentRoomType = null;  // 'fight', 'shop', 'rest', 'empty'
 
-const enemiesData = [
-  {
-    name: "Slime",
-    maxHp: 30,
-    damage: 5,
-    art: `  ___\n ( o )\n/  _  \\\n\\___/`,
-    special: null,
-  },
-  {
-    name: "Goblin",
-    maxHp: 50,
-    damage: 10,
-    art: `  ,      ,\n /(.-""-.)\\\n|\\  \\/  /|\n\\ )    ( /\n ||    ||`,
-    special: "dodge",
-  },
-  {
-    name: "Orc",
-    maxHp: 80,
-    damage: 15,
-    art: `  .----.\n /   o  \\\n|  o   o |\n\\__\\_/__/`,
-    special: "poison",
-  },
-  {
-    name: "Dragon",
-    maxHp: 120,
-    damage: 25,
-    art: `     / \\  //\\\n  /   \\(( . ))\n (     ))   ((\n  \\___//\\_//`,
-    special: "firebreath",
-  },
-];
+// Initialize map grid randomly on game start
+function generateMap() {
+  // Randomly assign room types for each grid cell
+  // Ensure center is empty or rest room
+  const roomTypes = ["fight", "shop", "rest", "empty"];
+  mapGrid = [];
 
-// Player object
-const player = {
-  level: 1,
-  xp: 0,
-  xpToNext: 50,
-  maxHp: 100,
-  hp: 100,
-  baseDamage: 15,
-  critChance: 0.1,
-  shieldActive: false,
-  potions: 3,
-};
-
-// Current enemy object
-let enemy = null;
-let score = 0;
-let inFight = false;
-
-function log(message) {
-  logEl.innerHTML = message + "<br>" + logEl.innerHTML;
-}
-
-function updateHighScore() {
-  if (score > highScore) {
-    highScore = score;
-    localStorage.setItem("highScore", highScore);
-    highScoreEl.textContent = highScore;
+  for (let y = 0; y < MAP_SIZE; y++) {
+    let row = [];
+    for (let x = 0; x < MAP_SIZE; x++) {
+      if (x === 1 && y === 1) {
+        row.push("rest"); // start position is rest room
+      } else {
+        // Randomly pick room type weighted to have more fights
+        let rand = Math.random();
+        if (rand < 0.5) row.push("fight");
+        else if (rand < 0.7) row.push("shop");
+        else if (rand < 0.85) row.push("rest");
+        else row.push("empty");
+      }
+    }
+    mapGrid.push(row);
   }
 }
 
-function renderPlayerStats() {
-  playerStatsEl.innerHTML = `
-  <div class="stats-bar">
-    <div>
-      <div class="hp-fill" style="width:${(player.hp / player.maxHp) * 100}%"></div>
-      <span>HP: ${player.hp} / ${player.maxHp}</span>
-    </div>
-    <div>
-      <div class="xp-fill" style="width:${(player.xp / player.xpToNext) * 100}%"></div>
-      <span>XP: ${player.xp} / ${player.xpToNext}</span>
-    </div>
-  </div>
-  <p>Level: ${player.level} | Potions: ${player.potions}</p>
-  `;
+// Returns string key for room coordinate
+function roomKey(x, y) {
+  return `${x},${y}`;
 }
 
-function getRandomEnemy() {
-  const index = Math.floor(Math.random() * enemiesData.length);
-  const base = enemiesData[index];
-  return {
-    ...base,
-    hp: base.maxHp + score * 5, // scale enemy hp with score
-    damage: base.damage + score * 2,
-  };
+// Check if player can move in a direction
+function canMove(dx, dy) {
+  let nx = playerPos.x + dx;
+  let ny = playerPos.y + dy;
+  return nx >= 0 && nx < MAP_SIZE && ny >= 0 && ny < MAP_SIZE;
 }
 
-function startFight() {
-  if (inFight) return;
-  enemy = getRandomEnemy();
-  inFight = true;
-  log(`⚔️ A wild ${enemy.name} appears!`);
-  renderFightScreen();
-  renderPlayerStats();
-}
-
-function renderFightScreen() {
-  gameScreen.innerHTML = `
-    <div>
-      <pre class="enemy-art">${enemy.art}</pre>
-      <h2>${enemy.name}</h2>
-      <div class="stats-bar">
-        <div>
-          <div class="hp-fill" style="width:${(enemy.hp / enemy.maxHp) * 100}%"></div>
-          <span>HP: ${enemy.hp} / ${enemy.maxHp}</span>
-        </div>
-      </div>
-      <div>
-        <button id="attackBtn">Attack</button>
-        <button id="fireballBtn">🔥 Fireball (costs 1 potion)</button>
-        <button id="shieldBtn">🛡️ Shield (blocks next attack)</button>
-        <button id="healBtn">💊 Heal (costs 1 potion)</button>
-      </div>
-    </div>
-  `;
-
-  document.getElementById("attackBtn").onclick = playerAttack;
-  document.getElementById("fireballBtn").onclick = playerFireball;
-  document.getElementById("shieldBtn").onclick = playerShield;
-  document.getElementById("healBtn").onclick = playerHeal;
-
-  updateButtons();
-}
-
-function updateButtons() {
-  document.getElementById("fireballBtn").disabled = player.potions < 1;
-  document.getElementById("healBtn").disabled = player.potions < 1;
-}
-
-function enemyTurn() {
-  if (!inFight) return;
-  if (enemy.hp <= 0) return;
-
-  let dmg = enemy.damage;
-
-  if (enemy.special === "dodge" && Math.random() < 0.3) {
-    log(`👹 ${enemy.name} dodged your attack!`);
+// Move player and handle entering new room
+function movePlayer(dx, dy) {
+  if (!canMove(dx, dy)) {
+    log("🚫 You can't move outside the map!");
     return;
   }
+  playerPos.x += dx;
+  playerPos.y += dy;
 
-  if (enemy.special === "firebreath" && Math.random() < 0.2) {
-    dmg += 10;
-    log(`🔥 ${enemy.name} uses firebreath for extra damage!`);
+  enterRoom();
+}
+
+// Enter current room and render based on room type
+function enterRoom() {
+  const x = playerPos.x;
+  const y = playerPos.y;
+  currentRoomType = mapGrid[y][x];
+  const key = roomKey(x, y);
+
+  // If fight room and cleared, treat as empty now
+  if (currentRoomType === "fight" && clearedRooms.has(key)) {
+    currentRoomType = "empty";
   }
 
-  if (player.shieldActive) {
-    log("🛡️ Your shield blocked the enemy's attack!");
-    player.shieldActive = false;
-  } else {
-    if (enemy.special === "poison" && Math.random() < 0.3) {
-      dmg += 5;
-      player.poisoned = true;
-      log(`☠️ ${enemy.name} poisoned you!`);
+  log(`🏃 You moved to room (${x + 1},${y + 1}) — ${currentRoomType}`);
+
+  switch (currentRoomType) {
+    case "fight":
+      startFight();
+      break;
+    case "shop":
+      renderShop();
+      break;
+    case "rest":
+      player.hp = player.maxHp;
+      log("🛌 You rested and restored your HP.");
+      renderPlayerStats();
+      renderMapLobby();
+      break;
+    case "empty":
+    default:
+      renderMapLobby();
+      break;
+  }
+}
+
+// Render map lobby with minimap and movement controls
+function renderMapLobby() {
+  let mapHtml = "<table class='map'>";
+  for (let y = 0; y < MAP_SIZE; y++) {
+    mapHtml += "<tr>";
+    for (let x = 0; x < MAP_SIZE; x++) {
+      const key = roomKey(x, y);
+      let room = mapGrid[y][x];
+      if (room === "fight" && clearedRooms.has(key)) room = "cleared";
+
+      let cellClass = "";
+      if (playerPos.x === x && playerPos.y === y) cellClass = "player";
+
+      mapHtml += `<td class="${cellClass} room-${room}">${room === "cleared" ? "✓" : room[0].toUpperCase()}</td>`;
     }
-
-    player.hp -= dmg;
-    log(`💥 ${enemy.name} hits you for ${dmg} damage!`);
+    mapHtml += "</tr>";
   }
+  mapHtml += "</table>";
 
-  if (player.hp <= 0) {
-    log("☠️ You have been defeated! Game over.");
-    inFight = false;
-    score = 0;
-    resetPlayer();
-    renderLobby();
-  }
+  gameScreen.innerHTML = `
+    <h2>🗺️ Map Lobby</h2>
+    ${mapHtml}
+    <p>Use the buttons below to move.</p>
+    <div>
+      <button id="upBtn" ${!canMove(0,-1) ? "disabled" : ""}>⬆️ Up</button><br>
+      <button id="leftBtn" ${!canMove(-1,0) ? "disabled" : ""}>⬅️ Left</button>
+      <button id="downBtn" ${!canMove(0,1) ? "disabled" : ""}>⬇️ Down</button>
+      <button id="rightBtn" ${!canMove(1,0) ? "disabled" : ""}>➡️ Right</button>
+    </div>
+    <p>Score: ${score}</p>
+  `;
+
+  document.getElementById("upBtn").onclick = () => movePlayer(0, -1);
+  document.getElementById("leftBtn").onclick = () => movePlayer(-1, 0);
+  document.getElementById("downBtn").onclick = () => movePlayer(0, 1);
+  document.getElementById("rightBtn").onclick = () => movePlayer(1, 0);
 
   renderPlayerStats();
-  renderFightScreen();
 }
+
+// --- Fix fight end bug: mark fight room cleared and go back to map ---
 
 function playerAttack() {
   if (!inFight) return;
@@ -197,7 +151,13 @@ function playerAttack() {
     checkLevelUp();
     updateHighScore();
     inFight = false;
-    renderLobby();
+
+    // Mark room cleared
+    clearedRooms.add(roomKey(playerPos.x, playerPos.y));
+
+    // Return to map lobby automatically
+    enterRoom();
+
   } else {
     enemyTurn();
   }
@@ -224,7 +184,10 @@ function playerFireball() {
     checkLevelUp();
     updateHighScore();
     inFight = false;
-    renderLobby();
+
+    clearedRooms.add(roomKey(playerPos.x, playerPos.y));
+    enterRoom();
+
   } else {
     enemyTurn();
   }
@@ -234,105 +197,18 @@ function playerFireball() {
   updateButtons();
 }
 
-function playerShield() {
-  if (!inFight) return;
-  player.shieldActive = true;
-  log("🛡️ Shield activated! You will block the next attack.");
-  enemyTurn();
-  renderPlayerStats();
-  renderFightScreen();
+// -- On game start --
+
+function startGame() {
+  score = 0;
+  clearedRooms.clear();
+  playerPos = { x: 1, y: 1 };
+  generateMap();
+  resetPlayer();
+  enterRoom();
+  log("👋 Welcome to Epic Turn-Based Combat with Exploration!");
 }
 
-function playerHeal() {
-  if (!inFight) return;
-  if (player.potions < 1) {
-    log("❌ Not enough potions!");
-    return;
-  }
-  player.potions--;
-  const healAmount = 20 + Math.floor(Math.random() * 10);
-  player.hp = Math.min(player.maxHp, player.hp + healAmount);
-  log(`💊 You healed for ${healAmount} HP.`);
-  enemyTurn();
-  renderPlayerStats();
-  renderFightScreen();
-  updateButtons();
-}
+startGame();
 
-function checkLevelUp() {
-  while (player.xp >= player.xpToNext) {
-    player.xp -= player.xpToNext;
-    player.level++;
-    player.maxHp += 20;
-    player.baseDamage += 5;
-    player.hp = player.maxHp;
-    player.xpToNext = Math.floor(player.xpToNext * 1.5);
-    player.potions++; // reward potion on level up
-    log(`🎉 Level up! You are now level ${player.level}. HP and damage increased!`);
-  }
-}
-
-function resetPlayer() {
-  player.hp = player.maxHp;
-  player.xp = 0;
-  player.level = 1;
-  player.xpToNext = 50;
-  player.baseDamage = 15;
-  player.potions = 3;
-  player.shieldActive = false;
-  log("🔄 Player reset.");
-  renderPlayerStats();
-}
-
-function renderLobby() {
-  gameScreen.innerHTML = `
-    <h2>🏠 Lobby</h2>
-    <p>Score: ${score}</p>
-    <button id="startFightBtn">⚔️ Fight Next Enemy</button>
-    <button id="restBtn">🛌 Rest (Restore HP)</button>
-    <button id="shopBtn">🛒 Shop (Buy Potions)</button>
-  `;
-  document.getElementById("startFightBtn").onclick = () => {
-    startFight();
-  };
-  document.getElementById("restBtn").onclick = () => {
-    player.hp = player.maxHp;
-    log("🛌 You rested and restored your HP.");
-    renderPlayerStats();
-  };
-  document.getElementById("shopBtn").onclick = () => {
-    renderShop();
-  };
-  renderPlayerStats();
-}
-
-function renderShop() {
-  gameScreen.innerHTML = `
-    <h2>🛒 Shop</h2>
-    <p>Potions cost 10 XP each.</p>
-    <p>You have ${player.xp} XP.</p>
-    <button id="buyPotionBtn">Buy Potion</button>
-    <button id="backBtn">Back to Lobby</button>
-  `;
-  document.getElementById("buyPotionBtn").onclick = () => {
-    if (player.xp >= 10) {
-      player.xp -= 10;
-      player.potions++;
-      log("🛍️ You bought a potion.");
-      renderShop();
-      renderPlayerStats();
-    } else {
-      log("❌ Not enough XP to buy potion.");
-    }
-  };
-  document.getElementById("backBtn").onclick = () => {
-    renderLobby();
-  };
-  renderPlayerStats();
-}
-
-// Initial load
-log("👋 Welcome to Epic Turn-Based Combat!");
-renderLobby();
-renderPlayerStats();
 
