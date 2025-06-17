@@ -1,135 +1,129 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Pac-Man Game</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Turn-Based Combat Game</title>
   <style>
     body {
-      margin: 0;
-      background: black;
-      color: white;
-      font-family: sans-serif;
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: #fff;
       text-align: center;
+      padding: 20px;
     }
-    h1 {
-      margin: 10px 0;
+    .game-container {
+      border: 2px solid #fff;
+      padding: 20px;
+      max-width: 500px;
+      margin: auto;
     }
-    #game {
-      display: grid;
-      grid-template-columns: repeat(20, 20px);
-      justify-content: center;
-      margin: 0 auto;
+    .log {
+      text-align: left;
+      background: #222;
+      padding: 10px;
+      height: 150px;
+      overflow-y: auto;
+      margin-top: 10px;
     }
-    .wall {
-      background: blue;
-    }
-    .pac-dot {
-      background: black;
-    }
-    .dot::after {
-      content: '';
-      display: block;
-      width: 5px;
-      height: 5px;
-      background: white;
-      border-radius: 50%;
-      margin: 7px auto;
-    }
-    .pacman {
-      background: yellow;
-      border-radius: 50%;
+    button {
+      margin: 5px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
-  <h1>Pac-Man Mini</h1>
-  <p>Use arrow keys to move</p>
-  <div id="game"></div>
+  <div class="game-container">
+    <h1>Turn-Based Combat</h1>
+    <p id="playerHP"></p>
+    <p id="enemyHP"></p>
+    <div>
+      <button onclick="attack()">Attack</button>
+      <button onclick="heal()">Heal</button>
+      <button onclick="nextEnemy()">Next Enemy</button>
+    </div>
+    <div class="log" id="log"></div>
+    <p>High Score: <span id="highScore">0</span></p>
+  </div>
 
   <script>
-    const game = document.getElementById('game');
-    const width = 20;
-    const layout = [
-      // 0 = dot, 1 = wall
-      1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-      1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-      1,0,1,1,1,0,1,1,1,1,1,1,1,1,0,1,1,1,0,1,
-      1,0,1,0,1,0,1,0,0,0,0,0,0,1,0,1,0,1,0,1,
-      1,0,1,0,1,0,1,0,1,1,1,1,0,1,0,1,0,1,0,1,
-      1,0,1,0,0,0,1,0,1,0,0,1,0,1,0,0,0,1,0,1,
-      1,0,1,1,1,0,1,0,1,0,0,1,0,1,0,1,1,1,0,1,
-      1,0,0,0,1,0,0,0,1,1,1,1,0,0,0,1,0,0,0,1,
-      1,1,1,0,1,1,1,0,0,0,0,0,0,1,1,1,0,1,1,1,
-      1,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0,0,1,
-      1,0,1,1,1,0,0,0,0,0,0,0,0,0,0,1,1,1,0,1,
-      1,0,1,0,1,0,1,1,1,0,1,1,1,0,1,0,1,0,1,1,
-      1,0,1,0,1,0,1,0,0,0,0,0,1,0,1,0,1,0,0,1,
-      1,0,1,0,1,0,1,1,1,1,1,0,1,0,1,0,1,1,0,1,
-      1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,
-      1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+    let player = { hp: 100, maxHp: 100 };
+    let enemies = [
+      { name: "Slime", hp: 30, damage: 5 },
+      { name: "Goblin", hp: 50, damage: 10 },
+      { name: "Orc", hp: 80, damage: 15 },
+      { name: "Dragon", hp: 120, damage: 25 }
     ];
+    let enemy;
+    let score = 0;
+    let highScore = localStorage.getItem("highScore") || 0;
+    document.getElementById("highScore").innerText = highScore;
 
-    const squares = [];
+    function log(message) {
+      const logEl = document.getElementById("log");
+      logEl.innerHTML = message + '<br>' + logEl.innerHTML;
+    }
 
-    function createBoard() {
-      for (let i = 0; i < layout.length; i++) {
-        const square = document.createElement('div');
-        game.appendChild(square);
-        squares.push(square);
+    function updateHP() {
+      document.getElementById("playerHP").innerText = `Player HP: ${player.hp}/${player.maxHp}`;
+      if (enemy) document.getElementById("enemyHP").innerText = `${enemy.name} HP: ${enemy.hp}`;
+    }
 
-        if (layout[i] === 1) {
-          square.classList.add('wall');
-        } else {
-          square.classList.add('pac-dot', 'dot');
-        }
+    function attack() {
+      if (!enemy) return log("No enemy to fight!");
+      const playerDmg = Math.floor(Math.random() * 10 + 5);
+      enemy.hp -= playerDmg;
+      log(`You hit the ${enemy.name} for ${playerDmg} damage!`);
+      if (enemy.hp <= 0) {
+        log(`You defeated the ${enemy.name}!`);
+        score++;
+        updateHighScore();
+        enemy = null;
+        updateHP();
+        return;
+      }
+      enemyAttack();
+      updateHP();
+    }
+
+    function heal() {
+      const healAmt = Math.floor(Math.random() * 10 + 5);
+      player.hp = Math.min(player.maxHp, player.hp + healAmt);
+      log(`You healed for ${healAmt} HP.`);
+      if (enemy) enemyAttack();
+      updateHP();
+    }
+
+    function enemyAttack() {
+      const dmg = Math.floor(Math.random() * enemy.damage);
+      player.hp -= dmg;
+      log(`The ${enemy.name} hits you for ${dmg} damage!`);
+      if (player.hp <= 0) {
+        log("You have been defeated! Game over.");
+        player.hp = player.maxHp;
+        enemy = null;
+        score = 0;
       }
     }
 
-    createBoard();
+    function nextEnemy() {
+      if (enemy) return log("Finish the current fight first!");
+      enemy = { ...enemies[Math.floor(Math.random() * enemies.length)] };
+      log(`A wild ${enemy.name} appears!`);
+      updateHP();
+    }
 
-    let pacmanCurrentIndex = 21;
-    squares[pacmanCurrentIndex].classList.add('pacman');
-
-    function movePacman(e) {
-      squares[pacmanCurrentIndex].classList.remove('pacman');
-
-      switch(e.key) {
-        case 'ArrowUp':
-          if (
-            pacmanCurrentIndex - width >= 0 &&
-            !squares[pacmanCurrentIndex - width].classList.contains('wall')
-          ) pacmanCurrentIndex -= width;
-          break;
-        case 'ArrowDown':
-          if (
-            pacmanCurrentIndex + width < width * width &&
-            !squares[pacmanCurrentIndex + width].classList.contains('wall')
-          ) pacmanCurrentIndex += width;
-          break;
-        case 'ArrowLeft':
-          if (
-            pacmanCurrentIndex % width !== 0 &&
-            !squares[pacmanCurrentIndex - 1].classList.contains('wall')
-          ) pacmanCurrentIndex -= 1;
-          break;
-        case 'ArrowRight':
-          if (
-            pacmanCurrentIndex % width < width - 1 &&
-            !squares[pacmanCurrentIndex + 1].classList.contains('wall')
-          ) pacmanCurrentIndex += 1;
-          break;
-      }
-
-      squares[pacmanCurrentIndex].classList.add('pacman');
-
-      // eat dot
-      if (squares[pacmanCurrentIndex].classList.contains('dot')) {
-        squares[pacmanCurrentIndex].classList.remove('dot');
+    function updateHighScore() {
+      if (score > highScore) {
+        highScore = score;
+        localStorage.setItem("highScore", highScore);
+        document.getElementById("highScore").innerText = highScore;
       }
     }
 
-    document.addEventListener('keydown', movePacman);
+    updateHP();
   </script>
 </body>
 </html>
