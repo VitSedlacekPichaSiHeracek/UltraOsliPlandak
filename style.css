@@ -116,3 +116,40 @@ footer {
   transition: width 0.4s ease;
 }
 
+.map {
+  border-collapse: collapse;
+  margin-bottom: 12px;
+}
+.map td {
+  width: 40px;
+  height: 40px;
+  text-align: center;
+  vertical-align: middle;
+  border: 2px solid #444;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 18px;
+  user-select: none;
+  cursor: default;
+}
+.room-fight {
+  background-color: #8b0000;
+}
+.room-shop {
+  background-color: #006400;
+}
+.room-rest {
+  background-color: #1e90ff;
+}
+.room-empty {
+  background-color: #555;
+}
+.room-cleared {
+  background-color: #555;
+  color: #aaffaa;
+}
+.player {
+  border-color: #ffd700 !important;
+  box-shadow: 0 0 10px #ffd700;
+}
+
