@@ -1,22 +1,225 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Space Shooter Enhanced</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <title>Space Shooter</title>
+  <style>
+    body {
+      margin: 0;
+      background: black;
+      overflow: hidden;
+      font-family: sans-serif;
+      color: white;
+    }
+    canvas {
+      display: block;
+      margin: auto;
+      border: 5px solid white;
+      background: radial-gradient(#000000, #050505, #111);
+    }
+    #ui {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      font-size: 18px;
+    }
+  </style>
 </head>
 <body>
-  <div id="gameContainer">
-    <canvas id="gameCanvas" width="400" height="600"></canvas>
-    <div id="ui">
-      <span>Score: <span id="score">0</span></span>
-      <span>High Score: <span id="highScore">0</span></span>
-      <span>Upgrade: <span id="upgrade">Normal</span></span>
-    </div>
-    <div id="instructions">←/→ or touch, SPACE or tap to shoot</div>
+  <div id="ui">
+    <div>Score: <span id="score">0</span></div>
+    <div>Health: <span id="health">3</span></div>
+    <div>Wave: <span id="wave">1</span></div>
   </div>
-  <audio id="bgm" loop src="https://opengameart.org/sites/default/files/Space_Music_Loop.ogg"></audio>
-  <script src="game.js"></script>
+  <canvas id="game" width="400" height="600"></canvas>
+  <script>
+    const canvas = document.getElementById('game');
+    const ctx = canvas.getContext('2d');
+
+    const keys = {};
+    document.addEventListener('keydown', e => keys[e.key] = true);
+    document.addEventListener('keyup', e => keys[e.key] = false);
+
+    let score = 0, wave = 1, health = 3;
+
+    class Player {
+      constructor() {
+        this.w = 30;
+        this.h = 20;
+        this.x = canvas.width / 2 - this.w / 2;
+        this.y = canvas.height - 40;
+        this.speed = 5;
+        this.cooldown = 0;
+        this.bullets = [];
+      }
+
+      update() {
+        if (keys['ArrowLeft'] && this.x > 0) this.x -= this.speed;
+        if (keys['ArrowRight'] && this.x + this.w < canvas.width) this.x += this.speed;
+        if (keys[' ']) this.shoot();
+
+        this.cooldown = Math.max(0, this.cooldown - 1);
+
+        this.bullets.forEach(b => b.update());
+        this.bullets = this.bullets.filter(b => b.y > 0);
+      }
+
+      draw() {
+        ctx.fillStyle = 'cyan';
+        ctx.beginPath();
+        ctx.moveTo(this.x + this.w / 2, this.y);
+        ctx.lineTo(this.x, this.y + this.h);
+        ctx.lineTo(this.x + this.w, this.y + this.h);
+        ctx.closePath();
+        ctx.fill();
+
+        this.bullets.forEach(b => b.draw());
+      }
+
+      shoot() {
+        if (this.cooldown === 0) {
+          this.bullets.push(new Bullet(this.x + this.w / 2, this.y));
+          this.cooldown = 15;
+        }
+      }
+    }
+
+    class Bullet {
+      constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.r = 3;
+        this.speed = 7;
+      }
+
+      update() {
+        this.y -= this.speed;
+      }
+
+      draw() {
+        ctx.fillStyle = 'yellow';
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    class Enemy {
+      constructor(x, y, speed) {
+        this.x = x;
+        this.y = y;
+        this.w = 30;
+        this.h = 20;
+        this.speed = speed;
+        this.hit = false;
+      }
+
+      update() {
+        this.y += this.speed;
+      }
+
+      draw() {
+        ctx.fillStyle = this.hit ? 'red' : 'lime';
+        ctx.beginPath();
+        ctx.rect(this.x, this.y, this.w, this.h);
+        ctx.fill();
+      }
+    }
+
+    const player = new Player();
+    let enemies = [];
+    let waveCooldown = 0;
+
+    function spawnWave() {
+      enemies = [];
+      for (let i = 0; i < 5 + wave * 2; i++) {
+        const x = Math.random() * (canvas.width - 30);
+        const y = Math.random() * -canvas.height;
+        const speed = 1 + wave * 0.3;
+        enemies.push(new Enemy(x, y, speed));
+      }
+    }
+
+    function update() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      player.update();
+      player.draw();
+
+      enemies.forEach(enemy => {
+        enemy.update();
+        enemy.draw();
+      });
+
+      // Collision: bullet vs enemy
+      for (let bullet of player.bullets) {
+        for (let enemy of enemies) {
+          if (
+            bullet.x > enemy.x &&
+            bullet.x < enemy.x + enemy.w &&
+            bullet.y > enemy.y &&
+            bullet.y < enemy.y + enemy.h
+          ) {
+            enemy.hit = true;
+            bullet.y = -10;
+            score += 10;
+            updateUI();
+          }
+        }
+      }
+
+      // Remove hit enemies
+      enemies = enemies.filter(e => !e.hit && e.y < canvas.height);
+
+      // Collision: enemy vs player
+      for (let enemy of enemies) {
+        if (
+          enemy.y + enemy.h >= player.y &&
+          enemy.x < player.x + player.w &&
+          enemy.x + enemy.w > player.x
+        ) {
+          health--;
+          enemy.hit = true;
+          if (health <= 0) {
+            gameOver();
+            return;
+          }
+          updateUI();
+        }
+      }
+
+      // If all enemies gone
+      if (enemies.length === 0 && waveCooldown <= 0) {
+        wave++;
+        updateUI();
+        waveCooldown = 60;
+      }
+
+      if (waveCooldown > 0) {
+        waveCooldown--;
+        if (waveCooldown === 0) spawnWave();
+      }
+
+      requestAnimationFrame(update);
+    }
+
+    function updateUI() {
+      document.getElementById('score').textContent = score;
+      document.getElementById('health').textContent = health;
+      document.getElementById('wave').textContent = wave;
+    }
+
+    function gameOver() {
+      ctx.fillStyle = 'white';
+      ctx.font = '32px sans-serif';
+      ctx.fillText('GAME OVER', canvas.width / 2 - 90, canvas.height / 2);
+    }
+
+    spawnWave();
+    updateUI();
+    update();
+  </script>
 </body>
 </html>
+
