@@ -2,195 +2,21 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Classic Space Shooter</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background: black; overflow: hidden; font-family: sans-serif; }
-    canvas { display: block; margin: 0 auto; background: #000; }
-    #ui {
-      position: absolute; top: 10px; left: 10px; color: white; font-size: 18px;
-    }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Space Shooter Enhanced</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="ui">Score: <span id="score">0</span> | High Score: <span id="highscore">0</span></div>
-  <canvas id="gameCanvas" width="480" height="640"></canvas>
-
-  <script>
-    const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
-    let score = 0;
-    let highScore = localStorage.getItem('highScore') || 0;
-    document.getElementById('highscore').textContent = highScore;
-
-    let gameOver = false;
-    let powerUp = null;
-
-    const player = {
-      x: canvas.width / 2 - 15,
-      y: canvas.height - 50,
-      width: 30,
-      height: 30,
-      speed: 5,
-      bullets: [],
-      fireRate: 300,
-      lastFired: 0,
-      upgrade: 'single'
-    };
-
-    const enemies = [];
-    let enemySpawnInterval = 1000;
-    let lastEnemySpawn = 0;
-
-    const powerUps = [];
-    const keys = {};
-    document.addEventListener('keydown', (e) => keys[e.code] = true);
-    document.addEventListener('keyup', (e) => keys[e.code] = false);
-
-    function drawPlayer() {
-      ctx.fillStyle = 'cyan';
-      ctx.fillRect(player.x, player.y, player.width, player.height);
-    }
-
-    function shootBullet() {
-      const now = Date.now();
-      if (now - player.lastFired > player.fireRate) {
-        if (player.upgrade === 'double') {
-          player.bullets.push(
-            { x: player.x + 5, y: player.y, width: 4, height: 10 },
-            { x: player.x + player.width - 9, y: player.y, width: 4, height: 10 }
-          );
-        } else if (player.upgrade === 'laser') {
-          player.bullets.push({ x: player.x + player.width / 2 - 1, y: player.y, width: 2, height: 20 });
-        } else {
-          player.bullets.push({ x: player.x + player.width / 2 - 2, y: player.y, width: 4, height: 10 });
-        }
-        player.lastFired = now;
-      }
-    }
-
-    function drawBullets() {
-      ctx.fillStyle = 'yellow';
-      player.bullets.forEach(bullet => {
-        ctx.fillRect(bullet.x, bullet.y, bullet.width, bullet.height);
-        bullet.y -= 8;
-      });
-      player.bullets = player.bullets.filter(bullet => bullet.y > 0);
-    }
-
-    function spawnEnemy() {
-      enemies.push({
-        x: Math.random() * (canvas.width - 30),
-        y: -30,
-        width: 30,
-        height: 30,
-        speed: 2 + Math.random() * 2,
-        isBoss: Math.random() < 0.05
-      });
-    }
-
-    function drawEnemies() {
-      enemies.forEach(enemy => {
-        ctx.fillStyle = enemy.isBoss ? 'purple' : 'red';
-        ctx.fillRect(enemy.x, enemy.y, enemy.width, enemy.height);
-        enemy.y += enemy.speed;
-      });
-    }
-
-    function checkCollisions() {
-      enemies.forEach((enemy, eIndex) => {
-        player.bullets.forEach((bullet, bIndex) => {
-          if (bullet.x < enemy.x + enemy.width &&
-              bullet.x + bullet.width > enemy.x &&
-              bullet.y < enemy.y + enemy.height &&
-              bullet.y + bullet.height > enemy.y) {
-            if (enemy.isBoss) {
-              enemy.isBoss = false;
-              score += 20;
-              powerUps.push({ x: enemy.x, y: enemy.y, type: getRandomUpgrade() });
-            } else {
-              enemies.splice(eIndex, 1);
-              score += 10;
-            }
-            player.bullets.splice(bIndex, 1);
-            document.getElementById('score').textContent = score;
-            if (score > highScore) {
-              highScore = score;
-              localStorage.setItem('highScore', highScore);
-              document.getElementById('highscore').textContent = highScore;
-            }
-          }
-        });
-
-        if (
-          player.x < enemy.x + enemy.width &&
-          player.x + player.width > enemy.x &&
-          player.y < enemy.y + enemy.height &&
-          player.y + player.height > enemy.y
-        ) {
-          gameOver = true;
-        }
-      });
-    }
-
-    function drawPowerUps() {
-      ctx.fillStyle = 'lime';
-      powerUps.forEach((powerUp, i) => {
-        ctx.fillRect(powerUp.x, powerUp.y, 15, 15);
-        powerUp.y += 2;
-
-        if (
-          player.x < powerUp.x + 15 &&
-          player.x + player.width > powerUp.x &&
-          player.y < powerUp.y + 15 &&
-          player.y + player.height > powerUp.y
-        ) {
-          player.upgrade = powerUp.type;
-          setTimeout(() => player.upgrade = 'single', 10000);
-          powerUps.splice(i, 1);
-        }
-      });
-    }
-
-    function getRandomUpgrade() {
-      const upgrades = ['double', 'laser'];
-      return upgrades[Math.floor(Math.random() * upgrades.length)];
-    }
-
-    function update() {
-      if (keys['ArrowLeft'] && player.x > 0) player.x -= player.speed;
-      if (keys['ArrowRight'] && player.x + player.width < canvas.width) player.x += player.speed;
-      if (keys['Space']) shootBullet();
-    }
-
-    function loop() {
-      if (gameOver) {
-        ctx.fillStyle = 'white';
-        ctx.font = '36px sans-serif';
-        ctx.fillText('Game Over', canvas.width / 2 - 80, canvas.height / 2);
-        return;
-      }
-
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      update();
-      drawPlayer();
-      drawBullets();
-      drawEnemies();
-      drawPowerUps();
-      checkCollisions();
-
-      const now = Date.now();
-      if (now - lastEnemySpawn > enemySpawnInterval) {
-        spawnEnemy();
-        lastEnemySpawn = now;
-        if (enemySpawnInterval > 300) enemySpawnInterval -= 20; // increase difficulty
-      }
-
-      requestAnimationFrame(loop);
-    }
-
-    loop();
-  </script>
+  <div id="gameContainer">
+    <canvas id="gameCanvas" width="400" height="600"></canvas>
+    <div id="ui">
+      <span>Score: <span id="score">0</span></span>
+      <span>High Score: <span id="highScore">0</span></span>
+      <span>Upgrade: <span id="upgrade">Normal</span></span>
+    </div>
+    <div id="instructions">←/→ or touch, SPACE or tap to shoot</div>
+  </div>
+  <audio id="bgm" loop src="https://opengameart.org/sites/default/files/Space_Music_Loop.ogg"></audio>
+  <script src="game.js"></script>
 </body>
 </html>
